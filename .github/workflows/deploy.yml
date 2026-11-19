@@ -26,14 +26,13 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USER }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
+      # FIX 2: Namespace the image to the Docker Hub user and tag with immutable commit SHA
       - name: Build and push image
         uses: docker/build-push-action@v5
         with:
           context: .
           push: true
-          # FAILURE 2: Wrong image tag. Not namespaced to the Docker Hub
-          # user and not tagged with the commit SHA.
-          tags: myapp:latest
+          tags: ${{ secrets.DOCKERHUB_USER }}/app:${{ github.sha }}
 
   # FAILURE 3: Deploy job does not wait for the build job to finish.
   # It runs in parallel and tries to use an image that was never pushed.
